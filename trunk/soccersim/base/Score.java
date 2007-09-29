@@ -1,6 +1,5 @@
 package soccersim.base;
 
-import java.util.Hashtable;
 import java.util.HashMap;
 
 /**
