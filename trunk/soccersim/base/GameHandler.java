@@ -78,7 +78,7 @@ public class GameHandler {
 			}
             
             if (field.playerHasScored()) {
-                // chenge the score
+                // change the score
                 score.incrementScore(field.getSideThatScored());
 
                 // call team methods

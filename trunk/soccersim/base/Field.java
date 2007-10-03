@@ -182,6 +182,17 @@ public class Field {
 			localArea.put(direction, state);
 		}
 		
+		// if needed, flip the local area
+		if (player.getAssumeEast() && player.getDefendingSide() == DefendingSide.West) {
+			Hashtable<MoveDirection, PlayerNeighborState> flippedLocalArea = new Hashtable<MoveDirection, PlayerNeighborState>();
+			
+			for (MoveDirection direction : localArea.keySet()) {
+				flippedLocalArea.put(direction.flipDirectionHorizontal(), localArea.get(direction));
+			}
+			
+			localArea = flippedLocalArea;
+		}
+		
 		return localArea;
 	}
 
@@ -286,7 +297,7 @@ public class Field {
 		int newXCoordinate = getXFrom(bestMove, player.getXCoordinate());
 		int newYCoordinate = getYFrom(bestMove, player.getYCoordinate());
 		
-		PlayerNeighborState state = player.getLocalAreaAt(bestMove);
+		PlayerNeighborState state = getPlayerNeighborStateAt(DefendingSide.West, newXCoordinate, newYCoordinate);
 		if (ballXCoordinate == newXCoordinate && ballYCoordinate == newYCoordinate) {
 			if(kickBall(bestMove)) {
 				if (playerHasScored) {
@@ -298,8 +309,7 @@ public class Field {
                 } else {
 					movePlayerTo(player, newXCoordinate, newYCoordinate);
 				}
-				// someone just kicked the ball so we know there isn't any 
-				//  deadlocks
+				// someone just kicked the ball so we know there isn't any deadlocks
 				playerUnableToMove = 0;
 			}
 		} else  if (state == PlayerNeighborState.Empty) {
