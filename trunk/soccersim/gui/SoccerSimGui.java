@@ -9,6 +9,10 @@ import soccersim.team.brute.BruteTeam;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Panel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -52,9 +56,81 @@ public class SoccerSimGui implements Runnable {
     private boolean shouldStop = false;
 
     public SoccerSimGui() {
+    	initializeComponents();
         addActionListeners();
         initializeThread();
-        initialize();
+        initializeComboBoxes();
+    }
+    
+    private void initializeComponents() {
+    	// setup GridLayout
+    	GridLayout layout = new GridLayout();
+    	layout.setRows(1);
+    	layout.setColumns(1);
+    	layout.setHgap(-1);
+    	layout.setVgap(-1);
+    	mainPanel = new JPanel();
+    	mainPanel.setLayout(layout);
+    	mainPanel.setBounds(20, 20, 804, 540);
+    	mainPanel.setEnabled(true);
+    	
+    	// setup Field (top most Panel)
+    	fieldPanel = new FieldPanel();
+    	
+    	// setup Button Panel (middle Panel)
+    	FlowLayout buttonPanelLayout = new FlowLayout(FlowLayout.CENTER);
+    	buttonPanelLayout.setHgap(10);
+    	buttonPanelLayout.setVgap(5);
+    	buttonPanel = new JPanel(buttonPanelLayout);
+    	
+    	westTeamScore = new JLabel("West Team: 0");
+    	buttonPanel.add(westTeamScore);
+    	
+    	startButton = new JButton("Start");
+    	buttonPanel.add(startButton);
+    	
+    	pauseButton = new JButton("Pause");
+    	buttonPanel.add(pauseButton);
+    	
+    	stopButton = new JButton("Stop");
+    	buttonPanel.add(stopButton);
+    	
+    	speedComboBox = new JComboBox();
+    	buttonPanel.add(speedComboBox);
+    	
+    	eastTeamScore = new JLabel("East Team: 0");
+    	buttonPanel.add(eastTeamScore);
+    	
+    	// setup Choose Team Panel (bottom Panel)
+    	chooseTeamPanel = new JPanel(buttonPanelLayout);
+    	
+    	JLabel chooseWest = new JLabel("West Team: ");
+    	chooseTeamPanel.add(chooseWest);
+    	
+    	chooseWestTeamComboBox = new JComboBox();
+    	chooseTeamPanel.add(chooseWestTeamComboBox);
+    	
+    	westCustomTeamButton = new JButton("Custom...");
+    	chooseTeamPanel.add(westCustomTeamButton);
+    	
+    	JLabel chooseEast = new JLabel("East Team: ");
+    	chooseTeamPanel.add(chooseEast);
+    	
+    	chooseEastTeamComboBox = new JComboBox();
+    	chooseTeamPanel.add(chooseEastTeamComboBox);
+    	
+    	eastCustomTeamButton = new JButton("Custom...");
+    	chooseTeamPanel.add(eastCustomTeamButton);
+    	
+    	JSplitPane buttonSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonPanel, chooseTeamPanel);
+    	
+    	JSplitPane mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, fieldPanel, buttonSplit);
+    	
+    	mainSplit.setDividerSize(0);
+    	mainSplit.setOrientation(0);
+    	mainSplit.setEnabled(false);
+    	
+    	mainPanel.add(mainSplit);
     }
 
     private void initializeThread() {
@@ -67,12 +143,13 @@ public class SoccerSimGui implements Runnable {
         paintThread = new Thread(this);
     }
 
-    private void initialize() {
+    private void initializeComboBoxes() {
         speedComboBox.addItem("Slower");
         speedComboBox.addItem("Slow");
         speedComboBox.addItem("Normal");
         speedComboBox.addItem("Fast");
         speedComboBox.addItem("Faster");
+        speedComboBox.addItem("Instant");
         speedComboBox.setSelectedItem("Normal");
 
         String[] teams = {"Choose team...", "Custom Team...", "The Random Rangers", "The Brutal Brutes", "The Diagonal Demons"};
@@ -132,6 +209,8 @@ public class SoccerSimGui implements Runnable {
                     speed = 50;
                 } else if (selected.equals("Faster")) {
                     speed = 25;
+                } else if (selected.equals("Instant")) {
+                	speed = 1;
                 }
             }
         });
