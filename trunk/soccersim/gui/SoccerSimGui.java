@@ -369,7 +369,7 @@ public class SoccerSimGui implements Runnable {
             e.printStackTrace();
         }
 
-        JFrame frame = new JFrame("SoccerSim Gui - Text Based");
+        JFrame frame = new JFrame("Java Soccer Simulator");
         frame.setContentPane(new SoccerSimGui().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
